@@ -21,9 +21,7 @@ RUN apt-get update && apt-get install -y libmcrypt-dev libmemcached-dev mcrypt l
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
 	&& ln -sf /dev/stderr /var/log/nginx/error.log
 
-EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
 
 # 自定义
 WORKDIR /www
@@ -36,3 +34,8 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
 
 COPY sources.list /etc/apt/sources.list
 COPY php.ini /usr/local/etc/php/conf.d/
+
+EXPOSE 80
+EXPOSE 9000
+
+CMD ["nginx", "-g", "daemon off;"]
