@@ -4,7 +4,7 @@ LABEL maintainer="yansongda <me@yansongda.cn>"
 
 # ENV for Global 
 ENV TZ=Asia/Shanghai
-ENV DEPENDENCIES curl gnupg git wget
+ENV DEPENDENCIES curl gnupg git wget gcc 
 ENV WORKING_DIR /www/software
 
 # ENV for PHP
@@ -45,8 +45,6 @@ ENV NGINX_CONFIGURE \
                 --with-http_sub_module --with-http_v2_module --with-mail \
                 --with-mail_ssl_module --with-stream --with-stream_realip_module \
                 --with-stream_ssl_module --with-stream_ssl_preread_module \
-                --with-cc-opt='-O2 -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic -fPIC' \
-                --with-ld-opt='-Wl,-z,relro -Wl,-z,now -pie' \
                 --add-module $WORKING_DIR/nginx-module-vts
 
 # INSTALL PHP 
@@ -75,7 +73,7 @@ RUN apt-get update \
   && git clone https://github.com/vozlt/nginx-module-vts.git \
   && tar -xzvf nginx-$NGINX_VERSION.tar.gz \
   && cd nginx-$NGINX_VERSION \
-  && ./configure $NGINX_CONFIGURE \
+  && ./configure $NGINX_CONFIGURE --with-cc-opt='-O2 -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic -fPIC' --with-ld-opt='-Wl,-z,relro -Wl,-z,now -pie' \
   && make && make install \
   && ln -sf /dev/stdout /var/log/nginx/access.log \
   && ln -sf /dev/stderr /var/log/nginx/error.log
