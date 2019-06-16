@@ -81,18 +81,19 @@ RUN apt-get update \
 # 自定义
 WORKDIR /www
 
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
-  && apt-get -y remove $DEPENDENCIES \
-  && apt-get purge -y --auto-remove \
-  && rm -rf /var/lib/apt/lists/* \
-  && rm -rf /tmp/pear ~/.pearrc \
-  && rm -rf $WORKING_DIR
-
 COPY sources.list /etc/apt/sources.list
 COPY php-ext-molten.ini /usr/local/etc/php/conf.d/
 COPY php.ini /usr/local/etc/php/conf.d/
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY run.sh /root/run.sh
+
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
+  && chmod a+x /root/run.sh \
+  && apt-get -y remove $DEPENDENCIES \
+  && apt-get purge -y --auto-remove \
+  && rm -rf /var/lib/apt/lists/* \
+  && rm -rf /tmp/pear ~/.pearrc \
+  && rm -rf $WORKING_DIR
 
 EXPOSE 80
 EXPOSE 9000
