@@ -45,7 +45,7 @@ ENV NGINX_CONFIGURE \
                 --with-http_sub_module --with-http_v2_module --with-mail \
                 --with-mail_ssl_module --with-stream --with-stream_realip_module \
                 --with-stream_ssl_module --with-stream_ssl_preread_module \
-                --add-module $WORKING_DIR/nginx-module-vts
+                --add-module=$WORKING_DIR/nginx-module-vts
 
 # INSTALL PHP 
 RUN apt-get update \
