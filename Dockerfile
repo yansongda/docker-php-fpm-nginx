@@ -73,7 +73,7 @@ RUN apt-get update \
   && git clone https://github.com/vozlt/nginx-module-vts.git \
   && tar -xzvf nginx-$NGINX_VERSION.tar.gz \
   && cd nginx-$NGINX_VERSION \
-  && ./configure $NGINX_CONFIGURE --with-cc-opt='-O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic -fPIC' --with-ld-opt='-Wl,-z,relro -Wl,-z,now -pie' \
+  && ./configure $NGINX_CONFIGURE \
   && make && make install \
   && ln -sf /dev/stdout /var/log/nginx/access.log \
   && ln -sf /dev/stderr /var/log/nginx/error.log
