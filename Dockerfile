@@ -87,7 +87,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
   && apt-get purge -y --auto-remove \
   && rm -rf /var/lib/apt/lists/* \
   && rm -rf /tmp/pear ~/.pearrc \
-  && rm -rf /root/software
+  && rm -rf $WORKING_DIR
 
 COPY sources.list /etc/apt/sources.list
 COPY php-ext-molten.ini /usr/local/etc/php/conf.d/
