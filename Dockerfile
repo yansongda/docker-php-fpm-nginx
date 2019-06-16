@@ -74,10 +74,9 @@ RUN apt-get update \
   && tar -xzvf nginx-$NGINX_VERSION.tar.gz \
   && cd nginx-$NGINX_VERSION \
   && ./configure $NGINX_CONFIGURE \
-  && make && make install
-# forward request and error logs to docker log collector
-RUN ln -sf /dev/stdout /var/log/nginx/access.log \
-	&& ln -sf /dev/stderr /var/log/nginx/error.log
+  && make && make install \
+  && ln -sf /dev/stdout /var/log/nginx/access.log \
+  && ln -sf /dev/stderr /var/log/nginx/error.log
 
 # 自定义
 WORKDIR /www
