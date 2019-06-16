@@ -18,7 +18,7 @@ ENV PHP_COMPOSER_REPO https://packagist.laravel-china.org
 # ENV for Nginx
 ENV NGINX_VERSION   1.16.0
 ENV NGINX_DEPENDENCIES \
-                    libpcre3 libpcre3-dev
+                    libpcre3 libpcre3-dev zlib1g zlib1g-dev
 ENV NGINX_CONFIGURE \
                 --user=www-data --group=www-data \
                 --prefix=/etc/nginx \
@@ -44,7 +44,7 @@ ENV NGINX_CONFIGURE \
                 --with-http_sub_module --with-http_v2_module --with-mail \
                 --with-mail_ssl_module --with-stream --with-stream_realip_module \
                 --with-stream_ssl_module --with-stream_ssl_preread_module \
-                --with-cc-opt='-O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic -fPIC' \
+                --with-cc-opt='-O2 -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic -fPIC' \
                 --with-ld-opt='-Wl,-z,relro -Wl,-z,now -pie' \
                 --add-module /root/software/nginx-module-vts
 
@@ -54,23 +54,23 @@ RUN apt-get update \
   && pecl install -o -f $PHP_EXT_INSTALLED \
   && docker-php-ext-configure gd --with-gd --with-webp-dir --with-jpeg-dir \
       --with-png-dir --with-zlib-dir --with-xpm-dir --with-freetype-dir \
-      --enable-gd-native-ttf \
   && docker-php-ext-install opcache bcmath bz2 gd iconv mysqli pdo pdo_mysql zip sockets \
   && docker-php-ext-enable opcache redis memcached mongodb swoole mcrypt amqp \
   && curl $PHP_COMPOSER_URL -o /usr/local/bin/composer \
   && chmod a+x /usr/local/bin/composer \
   && composer config -g repo.packagist composer $PHP_COMPOSER_REPO \
-  && composer selfupdate
+  && mkdir /root/software && git clone https://github.com/chuan-yun/Molten.git \
+  && cd /root/software/Molten && phpize && ./configure && make && make install
 
 # INSTALL Nginx
 RUN apt-get update \
-  && apt-get install -y $NGINX_DEPENDENCIES \
+  && apt-get install -y $NGINX_DEPENDENCIES $DEPENDENCIES \
   && mkdir -p /root/software /var/cache/nginx/client_temp \
   && mkdir -p /var/cache/nginx/proxy_temp /var/cache/nginx/fastcgi_temp \
   && mkdir -p /var/cache/nginx/uwsgi_temp /var/cache/nginx/scgi_temp \
   && cd /root/software \
   && wget https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz \
-  && git clone git://github.com/vozlt/nginx-module-vts.git \
+  && git clone https://github.com/vozlt/nginx-module-vts.git \
   && tar -xzvf nginx-$NGINX_VERSION.tar.gz \
   && cd nginx-$NGINX_VERSION \
   && ./configure $NGINX_CONFIGURE \
@@ -89,6 +89,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
   && rm -rf /root/software
 
 COPY sources.list /etc/apt/sources.list
+COPY php-ext-molten.ini /usr/local/etc/php/conf.d/
 COPY php.ini /usr/local/etc/php/conf.d/
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY run.sh /root/run.sh
