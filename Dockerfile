@@ -97,6 +97,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
   && rm -rf $WORKING_DIR
 
 EXPOSE 80
+EXPOSE 8085
 EXPOSE 9000
 
 CMD ["/bin/bash", "/root/run.sh"]
