@@ -5,6 +5,7 @@ LABEL maintainer="yansongda <me@yansongda.cn>"
 # ENV for Global 
 ENV TZ=Asia/Shanghai
 ENV DEPENDENCIES curl gnupg git wget
+ENV WORKING_DIR /www/software
 
 # ENV for PHP
 ENV PHP_DEPENDENCIES \
@@ -59,16 +60,16 @@ RUN apt-get update \
   && curl $PHP_COMPOSER_URL -o /usr/local/bin/composer \
   && chmod a+x /usr/local/bin/composer \
   && composer config -g repo.packagist composer $PHP_COMPOSER_REPO \
-  && mkdir /root/software && git clone https://github.com/chuan-yun/Molten.git \
-  && cd /root/software/Molten && phpize && ./configure && make && make install
+  && mkdir $WORKING_DIR && git clone https://github.com/chuan-yun/Molten.git \
+  && cd $WORKING_DIR/Molten && phpize && ./configure && make && make install
 
 # INSTALL Nginx
 RUN apt-get update \
   && apt-get install -y $NGINX_DEPENDENCIES $DEPENDENCIES \
-  && mkdir -p /root/software /var/cache/nginx/client_temp \
+  && mkdir -p $WORKING_DIR /var/cache/nginx/client_temp \
   && mkdir -p /var/cache/nginx/proxy_temp /var/cache/nginx/fastcgi_temp \
   && mkdir -p /var/cache/nginx/uwsgi_temp /var/cache/nginx/scgi_temp \
-  && cd /root/software \
+  && cd $WORKING_DIR \
   && wget https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz \
   && git clone https://github.com/vozlt/nginx-module-vts.git \
   && tar -xzvf nginx-$NGINX_VERSION.tar.gz \
