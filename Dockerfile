@@ -83,7 +83,8 @@ WORKDIR /www
 
 COPY sources.list /etc/apt/sources.list
 COPY php-ext-molten.ini /usr/local/etc/php/conf.d/
-COPY php.ini /usr/local/etc/php/conf.d/
+COPY php.ini /usr/local/etc/php/
+COPY php-fpm-www.conf /usr/local/etc/php-fpm.d/www.conf
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY run.sh /root/run.sh
 
