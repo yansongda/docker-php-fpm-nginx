@@ -19,7 +19,7 @@ ENV PHP_COMPOSER_REPO https://packagist.laravel-china.org
 # ENV for Nginx
 ENV NGINX_VERSION   1.16.0
 ENV NGINX_DEPENDENCIES \
-                    libpcre3 libpcre3-dev zlib1g zlib1g-dev
+                    libpcre3 libpcre3-dev zlib1g zlib1g-dev libssl-dev openssl
 ENV NGINX_CONFIGURE \
                 --user=www-data --group=www-data \
                 --prefix=/etc/nginx \
