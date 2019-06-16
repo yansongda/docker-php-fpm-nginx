@@ -47,7 +47,7 @@ ENV NGINX_CONFIGURE \
                 --with-stream_ssl_module --with-stream_ssl_preread_module \
                 --with-cc-opt='-O2 -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic -fPIC' \
                 --with-ld-opt='-Wl,-z,relro -Wl,-z,now -pie' \
-                --add-module /root/software/nginx-module-vts
+                --add-module $WORKING_DIR/nginx-module-vts
 
 # INSTALL PHP 
 RUN apt-get update \
@@ -60,7 +60,8 @@ RUN apt-get update \
   && curl $PHP_COMPOSER_URL -o /usr/local/bin/composer \
   && chmod a+x /usr/local/bin/composer \
   && composer config -g repo.packagist composer $PHP_COMPOSER_REPO \
-  && mkdir $WORKING_DIR && git clone https://github.com/chuan-yun/Molten.git \
+  && mkdir -p $WORKING_DIR && cd $WORKING_DIR \
+  && git clone https://github.com/chuan-yun/Molten.git \
   && cd $WORKING_DIR/Molten && phpize && ./configure && make && make install
 
 # INSTALL Nginx
