@@ -4,10 +4,10 @@ docker php-fpm + Nginx 镜像
 ## Usage
 
 ### China Region
-docker pull registry.cn-shenzhen.aliyuncs.com/yansongda/php-fpm
+docker pull registry.cn-shenzhen.aliyuncs.com/yansongda/php-fpm-nginx
 
 ### Docker Hub
-docker pull yansongda/php-fpm
+docker pull yansongda/php-fpm-nginx
 
 ## php-fpm
 
