@@ -78,7 +78,7 @@ RUN apt-get update \
   && ln -sf /dev/stdout /var/log/nginx/access.log \
   && ln -sf /dev/stderr /var/log/nginx/error.log
 
-# 自定义
+# After build
 WORKDIR /www
 
 COPY sources.list /etc/apt/sources.list
