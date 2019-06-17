@@ -42,7 +42,8 @@ RUN apt-get update \
   && apt-get install -y $DEPENDENCIES \
   && mkdir -p $WORKING_DIR && cd $WORKING_DIR \
   && git clone https://github.com/chuan-yun/Molten.git \
-  && cd $WORKING_DIR/Molten && phpize && ./configure && make && make install
+  && cd $WORKING_DIR/Molten && phpize && ./configure && make && make install\
+  && mkdir -p /var/log/tracing && chmod -R 777 /var/log/tracing
 
 # INSTALL Nginx
 RUN apt-get update \
