@@ -1,20 +1,10 @@
-FROM php:7.2.19-fpm
+FROM registry.cn-shenzhen.aliyuncs.com/yansongda/php-fpm:7.2.19
 
 LABEL maintainer="yansongda <me@yansongda.cn>"
 
 # ENV for Global 
-ENV TZ=Asia/Shanghai
 ENV DEPENDENCIES curl gnupg git wget gcc 
 ENV WORKING_DIR /www/software
-
-# ENV for PHP
-ENV PHP_DEPENDENCIES \
-                    libwebp-dev libmcrypt-dev libmemcached-dev libbz2-dev libpng-dev \
-                    libxpm-dev librabbitmq-dev libfreetype6-dev libjpeg-dev
-ENV PHP_EXT_INSTALLED \
-                    mongodb swoole redis memcached mcrypt amqp
-ENV PHP_COMPOSER_URL https://dl.laravel-china.org/composer.phar
-ENV PHP_COMPOSER_REPO https://packagist.laravel-china.org
 
 # ENV for Nginx
 ENV NGINX_VERSION   1.16.0
@@ -49,15 +39,7 @@ ENV NGINX_CONFIGURE \
 
 # INSTALL PHP 
 RUN apt-get update \
-  && apt-get install -y $PHP_DEPENDENCIES $DEPENDENCIES \
-  && pecl install -o -f $PHP_EXT_INSTALLED \
-  && docker-php-ext-configure gd --with-gd --with-webp-dir --with-jpeg-dir \
-      --with-png-dir --with-zlib-dir --with-xpm-dir --with-freetype-dir \
-  && docker-php-ext-install opcache bcmath bz2 gd iconv mysqli pdo pdo_mysql zip sockets \
-  && docker-php-ext-enable opcache redis memcached mongodb swoole mcrypt amqp \
-  && curl $PHP_COMPOSER_URL -o /usr/local/bin/composer \
-  && chmod a+x /usr/local/bin/composer \
-  && composer config -g repo.packagist composer $PHP_COMPOSER_REPO \
+  && apt-get install -y $DEPENDENCIES \
   && mkdir -p $WORKING_DIR && cd $WORKING_DIR \
   && git clone https://github.com/chuan-yun/Molten.git \
   && cd $WORKING_DIR/Molten && phpize && ./configure && make && make install
@@ -81,15 +63,11 @@ RUN apt-get update \
 # After build
 WORKDIR /www
 
-COPY sources.list /etc/apt/sources.list
 COPY php-ext-molten.ini /usr/local/etc/php/conf.d/
-COPY php.ini /usr/local/etc/php/
-COPY php-fpm-www.conf /usr/local/etc/php-fpm.d/www.conf
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY run.sh /root/run.sh
 
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
-  && chmod a+x /root/run.sh \
+RUN chmod a+x /root/run.sh \
   && apt-get -y remove $DEPENDENCIES \
   && apt-get purge -y --auto-remove \
   && rm -rf /var/lib/apt/lists/* \
