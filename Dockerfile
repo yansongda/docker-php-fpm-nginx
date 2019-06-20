@@ -77,6 +77,5 @@ RUN chmod a+x /root/run.sh \
 
 EXPOSE 80
 EXPOSE 8085
-EXPOSE 9000
 
 CMD ["/bin/bash", "/root/run.sh"]
