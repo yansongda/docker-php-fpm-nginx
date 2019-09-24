@@ -7,7 +7,7 @@ ENV DEPENDENCIES curl gnupg git wget gcc
 ENV WORKING_DIR /www/software
 
 # ENV for Nginx
-ENV NGINX_VERSION   1.16.0
+ENV NGINX_VERSION   1.16.1
 ENV NGINX_DEPENDENCIES \
                     libpcre3 libpcre3-dev zlib1g zlib1g-dev libssl-dev openssl
 ENV NGINX_CONFIGURE \
@@ -37,17 +37,21 @@ ENV NGINX_CONFIGURE \
                 --with-stream_ssl_module --with-stream_ssl_preread_module \
                 --add-module=$WORKING_DIR/nginx-module-vts
 
-# INSTALL PHP 
+# COPY Assets
+COPY php-ext-molten.ini /usr/local/etc/php/conf.d/
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY run.sh /root/run.sh
+
+# INSTALL PHP-ext
 RUN apt-get update \
   && apt-get install -y $DEPENDENCIES \
   && mkdir -p $WORKING_DIR && cd $WORKING_DIR \
   && git clone https://github.com/chuan-yun/Molten.git \
-  && cd $WORKING_DIR/Molten && phpize && ./configure && make && make install\
-  && mkdir -p /var/log/tracing && chmod -R 777 /var/log/tracing
-
+  && cd $WORKING_DIR/Molten && phpize && ./configure && make && make install \
+  && mkdir -p /var/log/tracing && chmod -R 777 /var/log/tracing \
 # INSTALL Nginx
-RUN apt-get update \
-  && apt-get install -y $NGINX_DEPENDENCIES $DEPENDENCIES \
+  && apt-get update \
+  && apt-get install -y $NGINX_DEPENDENCIES \
   && mkdir -p $WORKING_DIR /var/cache/nginx/client_temp \
   && mkdir -p /var/cache/nginx/proxy_temp /var/cache/nginx/fastcgi_temp \
   && mkdir -p /var/cache/nginx/uwsgi_temp /var/cache/nginx/scgi_temp \
@@ -59,21 +63,17 @@ RUN apt-get update \
   && ./configure $NGINX_CONFIGURE \
   && make && make install \
   && ln -sf /dev/stdout /var/log/nginx/access.log \
-  && ln -sf /dev/stderr /var/log/nginx/error.log
-
-# After build
-WORKDIR /www
-
-COPY php-ext-molten.ini /usr/local/etc/php/conf.d/
-COPY nginx.conf /etc/nginx/nginx.conf
-COPY run.sh /root/run.sh
-
-RUN chmod a+x /root/run.sh \
+  && ln -sf /dev/stderr /var/log/nginx/error.log \
+# CLEAN
+  && chmod a+x /root/run.sh \
   && apt-get -y remove $DEPENDENCIES \
   && apt-get purge -y --auto-remove \
   && rm -rf /var/lib/apt/lists/* \
   && rm -rf /tmp/pear ~/.pearrc \
-  && rm -rf $WORKING_DIR
+  && cd $WORKING_DIR && cd .. && rm -rf $WORKING_DIR
+
+# After build
+WORKDIR /www
 
 EXPOSE 80
 EXPOSE 8085
