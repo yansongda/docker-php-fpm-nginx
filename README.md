@@ -15,7 +15,7 @@ similar with [https://github.com/yansongda/docker-php-fpm](https://github.com/ya
 
 ### Changing
 
-- add ext: molten 
+- add ext: molten (not support php7.3)
 
 ## nginx
 
