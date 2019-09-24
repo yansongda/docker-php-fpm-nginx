@@ -38,7 +38,6 @@ ENV NGINX_CONFIGURE \
                 --add-module=$WORKING_DIR/nginx-module-vts
 
 # COPY Assets
-COPY php-ext-molten.ini /usr/local/etc/php/conf.d/
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY run.sh /root/run.sh
 
