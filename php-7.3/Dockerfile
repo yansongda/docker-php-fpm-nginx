@@ -3,7 +3,7 @@ FROM registry.cn-shenzhen.aliyuncs.com/yansongda/php-fpm:7.3
 LABEL maintainer="yansongda <me@yansongda.cn>"
 
 # ENV for Global 
-ENV DEPENDENCIES curl gnupg git wget gcc 
+ENV DEPENDENCIES gnupg git gcc 
 ENV WORKING_DIR /www/software
 
 # ENV for Nginx
@@ -42,8 +42,8 @@ COPY nginx.conf /etc/nginx/nginx.conf
 COPY run.sh /root/run.sh
 
 # INSTALL Nginx
-RUN  apt-get update \
-  && apt-get install -y $DEPENDENCIES $NGINX_DEPENDENCIES \
+RUN  apt update \
+  && apt install -y $DEPENDENCIES $NGINX_DEPENDENCIES \
   && mkdir -p $WORKING_DIR /var/cache/nginx/client_temp \
   && mkdir -p /var/cache/nginx/proxy_temp /var/cache/nginx/fastcgi_temp \
   && mkdir -p /var/cache/nginx/uwsgi_temp /var/cache/nginx/scgi_temp \
@@ -58,8 +58,8 @@ RUN  apt-get update \
   && ln -sf /dev/stderr /var/log/nginx/error.log \
 # CLEAN
   && chmod a+x /root/run.sh \
-  && apt-get -y remove $DEPENDENCIES \
-  && apt-get purge -y --auto-remove \
+  && apt -y remove $DEPENDENCIES \
+  && apt purge -y --auto-remove \
   && rm -rf /var/lib/apt/lists/* \
   && rm -rf /tmp/pear ~/.pearrc \
   && cd $WORKING_DIR && cd .. && rm -rf $WORKING_DIR
