@@ -7,7 +7,7 @@ ENV DEPENDENCIES gnupg git gcc
 ENV WORKING_DIR /www/software
 
 # ENV for Nginx
-ENV NGINX_VERSION   1.18.1
+ENV NGINX_VERSION   1.18.0
 ENV NGINX_DEPENDENCIES \
                     libpcre3 libpcre3-dev zlib1g zlib1g-dev libssl-dev openssl
 ENV NGINX_CONFIGURE \
